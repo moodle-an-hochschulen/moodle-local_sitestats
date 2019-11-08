@@ -81,6 +81,7 @@ $string['setting_pluginstatistics_desc'] = 'Enabling this setting will enable th
 $string['statistics_basedata'] = 'Moodle sites crawled';
 $string['statistics_basedatasitescrawled'] = 'Moodle sites crawled';
 $string['statistics_basedatasiteswithplugins'] = 'Moodle sites with at least one plugin';
+$string['statistics_basedatasiteswithoutplugins'] = 'Moodle sites without any plugin';
 $string['statistics_basedatamostpluginsonasite'] = 'Most plugins on a Moodle site';
 $string['sum'] = 'Sum';
 $string['table_pluginusedlabel'] = 'Found plugin installations ordered by frequency of occurence';

@@ -415,6 +415,14 @@ class renderer extends \plugin_renderer_base {
         $output .= \html_writer::end_tag('tr');
         $output .= \html_writer::start_tag('tr');
         $output .= \html_writer::start_tag('td');
+        $output .= get_string('statistics_basedatasiteswithoutplugins', 'local_sitestats');
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::start_tag('td');
+        $output .= $sumofsites - $sumofsiteswithplugins;
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::end_tag('tr');
+        $output .= \html_writer::start_tag('tr');
+        $output .= \html_writer::start_tag('td');
         $output .= get_string('statistics_basedatasiteswithplugins', 'local_sitestats');
         $output .= \html_writer::end_tag('td');
         $output .= \html_writer::start_tag('td');
