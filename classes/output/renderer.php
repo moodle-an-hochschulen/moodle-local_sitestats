@@ -131,6 +131,9 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::end_tag('tr');
             $output .= \html_writer::end_tag('thead');
 
+            // Remember most plugins on a site.
+            $mostpluginsonasite = 0;
+
             // Plugins.
             foreach ($result_plugins as $plugin) {
                 // Get the sites using the plugin from DB
@@ -163,6 +166,11 @@ class renderer extends \plugin_renderer_base {
                 // Sum cell
                 $output .= \html_writer::tag('td', $plugin->count);
                 $output .= \html_writer::end_tag('tr');
+
+                // Check and remember most plugins on a site.
+                if ($plugin->count > $mostpluginsonasite) {
+                    $mostpluginsonasite = $plugin->count;
+                }
             }
 
             // Sums.
@@ -178,12 +186,36 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::end_tag('tr');
             $output .= \html_writer::end_tag('tfoot');
             $output .= \html_writer::end_tag('table');
-
-            // Build base data information.
-            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
-            $output .= get_string('chart_pluginusedrelativelabel', 'local_sitestats', array('number' => $sumofsites));
-            $output .= \html_writer::end_tag('div');
         }
+
+        // Show base data information.
+        $output .= \html_writer::tag('h3', get_string('result_basedata', 'local_sitestats'));
+        $output .= \html_writer::start_tag('table', array('class' => 'table table-sm table-hover table-striped table-responsive'));
+        $output .= \html_writer::start_tag('tr');
+        $output .= \html_writer::start_tag('td');
+        $output .= get_string('result_basedatasitescrawled', 'local_sitestats');
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::start_tag('td');
+        $output .= $sumofsites;
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::end_tag('tr');
+        $output .= \html_writer::start_tag('tr');
+        $output .= \html_writer::start_tag('td');
+        $output .= get_string('result_basedatasiteswithplugins', 'local_sitestats');
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::start_tag('td');
+        $output .= $sumofsiteswithplugins;
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::end_tag('tr');
+        $output .= \html_writer::start_tag('tr');
+        $output .= \html_writer::start_tag('td');
+        $output .= get_string('result_basedatamostpluginsonasite', 'local_sitestats');
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::start_tag('td');
+        $output .= $mostpluginsonasite;
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::end_tag('tr');
+        $output .= \html_writer::end_tag('table');
 
         return $output;
     }
@@ -261,12 +293,28 @@ class renderer extends \plugin_renderer_base {
             );
             $chart->set_labels($mostusedpluginslabels);
             $output .= $OUTPUT->render($chart);
-
-            // Build base data information.
-            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
-            $output .= get_string('chart_pluginusedrelativelabel', 'local_sitestats', array('number' => $sumofsites));
-            $output .= \html_writer::end_tag('div');
         }
+
+        // Show base data information.
+        $output .= \html_writer::tag('h3', get_string('result_basedata', 'local_sitestats'));
+        $output .= \html_writer::start_tag('table', array('class' => 'table table-sm table-hover table-striped table-responsive'));
+        $output .= \html_writer::start_tag('tr');
+        $output .= \html_writer::start_tag('td');
+        $output .= get_string('result_basedatasitescrawled', 'local_sitestats');
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::start_tag('td');
+        $output .= $sumofsites;
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::end_tag('tr');
+        $output .= \html_writer::start_tag('tr');
+        $output .= \html_writer::start_tag('td');
+        $output .= get_string('result_basedatasiteswithplugins', 'local_sitestats');
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::start_tag('td');
+        $output .= $sumofsiteswithplugins;
+        $output .= \html_writer::end_tag('td');
+        $output .= \html_writer::end_tag('tr');
+        $output .= \html_writer::end_tag('table');
 
         return $output;
     }
