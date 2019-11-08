@@ -39,8 +39,8 @@ if ($hassiteconfig) {
         $page->add(new admin_setting_configtextarea('local_sitestats/crawlsites',
                 get_string('setting_crawlsites', 'local_sitestats', null, true),
                 get_string('setting_crawlsites_desc', 'local_sitestats', null, true),
-                'https://demo.moodle.net|Moodle demo instance
-https://qa.moodle.net|Moodle QA instance',
+                'https://sandbox.moodledemo.net|Moodle demo instance
+https://qa.moodledemo.net|Moodle QA instance',
                 PARAM_RAW));
 
         // Create plugin statistics heading.
