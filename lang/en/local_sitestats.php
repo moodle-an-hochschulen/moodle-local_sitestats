@@ -30,6 +30,7 @@ $string['button_gotosettings'] = 'Go to settings';
 $string['button_runcrawltask'] = 'Run the scheduled task for crawling';
 $string['chart_pluginmostusedlabel'] = '{$a->number} most used plugins';
 $string['chart_pluginusedabsolutelabel'] = 'Installations found among {$a->number} crawled sites';
+$string['chart_pluginusedpersitelabel'] = 'Sites with this amount of plugins used';
 $string['crawl_crawlfinish'] = 'CRAWL FINISH: Configured sites have been crawled completely';
 $string['crawl_crawlstart'] = 'CRAWL START: Configured sites are now being crawled';
 $string['crawl_pluginfound'] = 'PLUGIN FOUND: Site "{$a->site}" has this plugin installed: {$a->plugin}';

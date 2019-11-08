@@ -258,6 +258,15 @@ class renderer extends \plugin_renderer_base {
         // Do only if we have found at least one site with a plugin.
         if ($sumofsiteswithplugins > 0) {
 
+            // Get all site records and the plugin counts from DB ordered by site name
+            $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site)
+                    FROM {local_sitestats_sites} AS site
+                    JOIN {local_sitestats_plugins_site} AS jointable
+                    ON site.id = jointable.site
+                    GROUP BY site.id, site.url, site.title
+                    ORDER BY count(jointable.site) ASC';
+            $result_sites = $DB->get_records_sql($sql_sites);
+
             // Get all plugin records and the installation counts from DB ordered by installation count
             $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
                     FROM {local_sitestats_plugins} AS pl
@@ -312,6 +321,36 @@ class renderer extends \plugin_renderer_base {
             );
             $chart->set_labels($mostusedpluginslabels);
             $output .= $OUTPUT->render($chart);
+
+            // Pick the plugin counts per site.
+            $pluginsusedpersiterawdata = array();
+            foreach ($result_sites as $s) {
+                if ($pluginsusedpersiterawdata[$s->count]) {
+                    $pluginsusedpersiterawdata[$s->count]++;
+                } else {
+                    $pluginsusedpersiterawdata[$s->count] = 1;
+                };
+            }
+            $pluginsusedpersitedata = array();
+            $pluginsusedpersitelabels = array();
+            for ($j = 1; $j <= max(array_keys($pluginsusedpersiterawdata)); $j+=5) {
+                $pluginsusedpersitedata[] = $pluginsusedpersiterawdata[$j] + $pluginsusedpersiterawdata[$j+1] +
+                        $pluginsusedpersiterawdata[$j+2] + $pluginsusedpersiterawdata[$j+3] + $pluginsusedpersiterawdata[$j+4];
+                $pluginsusedpersitelabels[] = $j.' - '.($j+4);
+            }
+
+            // Build chart heading.
+            $output .= \html_writer::tag('h3', get_string('chart_pluginusedpersitelabel', 'local_sitestats'));
+
+            // Build chart.
+            $chart2 = new \core\chart_line();
+            $chart2->set_smooth(true);
+            $chart2->add_series(new \core\chart_series(
+                    get_string('chart_pluginusedpersitelabel', 'local_sitestats'),
+                    $pluginsusedpersitedata)
+            );
+            $chart2->set_labels($pluginsusedpersitelabels);
+            $output .= $OUTPUT->render($chart2);
         }
 
         // Show base data information.
