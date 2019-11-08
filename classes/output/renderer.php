@@ -166,11 +166,6 @@ class renderer extends \plugin_renderer_base {
                 // Sum cell
                 $output .= \html_writer::tag('td', $plugin->count);
                 $output .= \html_writer::end_tag('tr');
-
-                // Check and remember most plugins on a site.
-                if ($plugin->count > $mostpluginsonasite) {
-                    $mostpluginsonasite = $plugin->count;
-                }
             }
 
             // Sums.
@@ -180,6 +175,11 @@ class renderer extends \plugin_renderer_base {
             // Cells for all sites
             foreach ($result_sites as $site) {
                 $output .= \html_writer::tag('td', $site->count);
+
+                // Check and remember most plugins on a site.
+                if ($site->count > $mostpluginsonasite) {
+                    $mostpluginsonasite = $site->count;
+                }
             }
             // Empty cell right bottom.
             $output .= \html_writer::tag('td', '&nbsp;');
