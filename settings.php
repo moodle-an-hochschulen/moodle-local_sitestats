@@ -88,6 +88,7 @@ qtype_gapselect
 quizaccess_offlineattempts
 repository_areafiles
 repository_skydrive
+theme_classic
 tinymce_managefiles
 tool_dataprivacy
 tool_lpimportcsv
