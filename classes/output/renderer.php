@@ -131,9 +131,6 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::end_tag('tr');
             $output .= \html_writer::end_tag('thead');
 
-            // Remember most plugins on a site.
-            $mostpluginsonasite = 0;
-
             // Plugins.
             foreach ($result_plugins as $plugin) {
                 // Get the sites using the plugin from DB
@@ -175,11 +172,6 @@ class renderer extends \plugin_renderer_base {
             // Cells for all sites
             foreach ($result_sites as $site) {
                 $output .= \html_writer::tag('td', $site->count);
-
-                // Check and remember most plugins on a site.
-                if ($site->count > $mostpluginsonasite) {
-                    $mostpluginsonasite = $site->count;
-                }
             }
             // Empty cell right bottom.
             $output .= \html_writer::tag('td', '&nbsp;');
@@ -187,35 +179,6 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::end_tag('tfoot');
             $output .= \html_writer::end_tag('table');
         }
-
-        // Show base data information.
-        $output .= \html_writer::tag('h3', get_string('result_basedata', 'local_sitestats'));
-        $output .= \html_writer::start_tag('table', array('class' => 'table table-sm table-hover table-striped table-responsive'));
-        $output .= \html_writer::start_tag('tr');
-        $output .= \html_writer::start_tag('td');
-        $output .= get_string('result_basedatasitescrawled', 'local_sitestats');
-        $output .= \html_writer::end_tag('td');
-        $output .= \html_writer::start_tag('td');
-        $output .= $sumofsites;
-        $output .= \html_writer::end_tag('td');
-        $output .= \html_writer::end_tag('tr');
-        $output .= \html_writer::start_tag('tr');
-        $output .= \html_writer::start_tag('td');
-        $output .= get_string('result_basedatasiteswithplugins', 'local_sitestats');
-        $output .= \html_writer::end_tag('td');
-        $output .= \html_writer::start_tag('td');
-        $output .= $sumofsiteswithplugins;
-        $output .= \html_writer::end_tag('td');
-        $output .= \html_writer::end_tag('tr');
-        $output .= \html_writer::start_tag('tr');
-        $output .= \html_writer::start_tag('td');
-        $output .= get_string('result_basedatamostpluginsonasite', 'local_sitestats');
-        $output .= \html_writer::end_tag('td');
-        $output .= \html_writer::start_tag('td');
-        $output .= $mostpluginsonasite;
-        $output .= \html_writer::end_tag('td');
-        $output .= \html_writer::end_tag('tr');
-        $output .= \html_writer::end_tag('table');
 
         return $output;
     }
@@ -353,12 +316,98 @@ class renderer extends \plugin_renderer_base {
             $output .= $OUTPUT->render($chart2);
         }
 
-        // Show base data information.
-        $output .= \html_writer::tag('h3', get_string('result_basedata', 'local_sitestats'));
+        return $output;
+    }
+
+
+    /**
+     * Returns the content of the "View statistics" tab.
+     *
+     * @return string HTML
+     */
+    public function render_tab_viewstatistics() {
+        global $DB;
+
+        // Prepare output.
+        $output = '';
+
+        // Get the sum of all crawled installations.
+        $sql_sites = 'SELECT id, sitelastcrawled
+             FROM {local_sitestats_sites}
+             WHERE sitelastcrawled IS NOT NULL';
+        $result_sites = $DB->get_records_sql($sql_sites);
+        $sumofsites = count($result_sites);
+
+        // Stop here if we have not crawled any site yet.
+        if ($sumofsites == 0) {
+            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
+            $output .= get_string('nositescrawledyet', 'local_sitestats');
+            $output .= \html_writer::end_tag('div');
+            return $output;
+        }
+
+        // Get the sum of all crawled installations with plugins.
+        $sql_siteswithplugins = 'SELECT DISTINCT site
+             FROM {local_sitestats_plugins_site}';
+        $result_siteswithplugins = $DB->get_records_sql($sql_siteswithplugins);
+        $sumofsiteswithplugins = count($result_siteswithplugins);
+
+        // Do only if we have found at least one site with a plugin.
+        if ($sumofsiteswithplugins > 0) {
+
+            // Get all site records and the plugin counts from DB ordered by site name
+            $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site)
+                    FROM {local_sitestats_sites} AS site
+                    JOIN {local_sitestats_plugins_site} AS jointable
+                    ON site.id = jointable.site
+                    GROUP BY site.id, site.url, site.title
+                    ORDER BY title ASC';
+            $result_sites = $DB->get_records_sql($sql_sites);
+
+            // Get all plugin records and the installation counts from DB ordered by installation count
+            $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
+                    FROM {local_sitestats_plugins} AS pl
+                    JOIN {local_sitestats_plugins_site} AS jointable
+                    ON pl.id = jointable.plugin
+                    GROUP BY pl.id, pl.frankenstyle, pl.title
+                    ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
+            $result_plugins = $DB->get_records_sql($sql_plugins);
+
+            // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
+            // but rather some strange webserver configuration.
+            $countfoundplugins = count($result_plugins);
+            foreach ($result_sites as $s) {
+                if ($s->count == $countfoundplugins) {
+                    // Remove site entry from list of sites.
+                    unset ($result_sites[$s->id]);
+                    // Decrease plugin count in list of plugins.
+                    foreach ($result_plugins as $p) {
+                        $currentcount = $result_plugins[$p->id]->count;
+                        if ($currentcount - 1 > 0) {
+                            $result_plugins[$p->id]->count = $currentcount - 1;
+                        } else {
+                            unset($result_plugins[$p->id]);
+                        }
+                    }
+                }
+            }
+
+            // Get most plugins on a site.
+            $mostpluginsonasite = 0;
+            foreach ($result_sites as $site) {
+                // Check and remember most plugins on a site.
+                if ($site->count > $mostpluginsonasite) {
+                    $mostpluginsonasite = $site->count;
+                }
+            }
+        }
+
+        // Show statistics table.
+        $output .= \html_writer::tag('h3', get_string('statistics_basedata', 'local_sitestats'));
         $output .= \html_writer::start_tag('table', array('class' => 'table table-sm table-hover table-striped table-responsive'));
         $output .= \html_writer::start_tag('tr');
         $output .= \html_writer::start_tag('td');
-        $output .= get_string('result_basedatasitescrawled', 'local_sitestats');
+        $output .= get_string('statistics_basedatasitescrawled', 'local_sitestats');
         $output .= \html_writer::end_tag('td');
         $output .= \html_writer::start_tag('td');
         $output .= $sumofsites;
@@ -366,18 +415,28 @@ class renderer extends \plugin_renderer_base {
         $output .= \html_writer::end_tag('tr');
         $output .= \html_writer::start_tag('tr');
         $output .= \html_writer::start_tag('td');
-        $output .= get_string('result_basedatasiteswithplugins', 'local_sitestats');
+        $output .= get_string('statistics_basedatasiteswithplugins', 'local_sitestats');
         $output .= \html_writer::end_tag('td');
         $output .= \html_writer::start_tag('td');
         $output .= $sumofsiteswithplugins;
         $output .= \html_writer::end_tag('td');
         $output .= \html_writer::end_tag('tr');
-        $output .= \html_writer::end_tag('table');
+        if ($mostpluginsonasite > 0) {
+            $output .= \html_writer::start_tag('tr');
+            $output .= \html_writer::start_tag('td');
+            $output .= get_string('statistics_basedatamostpluginsonasite', 'local_sitestats');
+            $output .= \html_writer::end_tag('td');
+            $output .= \html_writer::start_tag('td');
+            $output .= $mostpluginsonasite;
+            $output .= \html_writer::end_tag('td');
+            $output .= \html_writer::end_tag('tr');
+            $output .= \html_writer::end_tag('table');
+        }
 
         return $output;
     }
 
-        /**
+    /**
      * Returns the content of the "Crawl" tab.
      *
      * @return string HTML

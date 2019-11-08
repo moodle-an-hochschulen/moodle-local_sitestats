@@ -45,13 +45,14 @@ echo $OUTPUT->header();
 
 // Build tabs.
 $action = optional_param('action', null, PARAM_ALPHA);
-if (!in_array($action, ['viewtable', 'viewchart', 'crawl', 'flush', 'settings'])) {
+if (!in_array($action, ['viewtable', 'viewchart', 'viewstatistics', 'crawl', 'flush', 'settings'])) {
     $action = 'viewtable';
 }
 $tabs = [];
 if (has_capability('local/sitestats:view', context_system::instance())) {
     $tabs[] = new \tabobject('viewtable', new \moodle_url($PAGE->url, ['action' => 'viewtable']), get_string('pageviewtable', 'local_sitestats'));
     $tabs[] = new \tabobject('viewchart', new \moodle_url($PAGE->url, ['action' => 'viewchart']), get_string('pageviewchart', 'local_sitestats'));
+    $tabs[] = new \tabobject('viewstatistics', new \moodle_url($PAGE->url, ['action' => 'viewstatistics']), get_string('pageviewstatistics', 'local_sitestats'));
 }
 if (has_capability('local/sitestats:crawl', context_system::instance())) {
     $tabs[] = new \tabobject('crawl', new \moodle_url($PAGE->url, ['action' => 'crawl']), get_string('pagecrawl', 'local_sitestats'));
@@ -74,6 +75,10 @@ if ($action == 'viewtable' && has_capability('local/sitestats:view', context_sys
     // Page content for tab "View chart".
 } else if ($action == 'viewchart' && has_capability('local/sitestats:view', context_system::instance())) {
     echo $renderer->render_tab_viewchart();
+
+    // Page content for tab "View statistics".
+} else if ($action == 'viewstatistics' && has_capability('local/sitestats:view', context_system::instance())) {
+    echo $renderer->render_tab_viewstatistics();
 
     // Page content for tab "Crawl".
 } else if ($action == 'crawl' && has_capability('local/sitestats:crawl', context_system::instance())) {
