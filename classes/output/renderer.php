@@ -299,7 +299,7 @@ class renderer extends \plugin_renderer_base {
             for ($j = 1; $j <= max(array_keys($pluginsusedpersiterawdata)); $j+=5) {
                 $pluginsusedpersitedata[] = $pluginsusedpersiterawdata[$j] + $pluginsusedpersiterawdata[$j+1] +
                         $pluginsusedpersiterawdata[$j+2] + $pluginsusedpersiterawdata[$j+3] + $pluginsusedpersiterawdata[$j+4];
-                $pluginsusedpersitelabels[] = $j.' - '.($j+4);
+                $pluginsusedpersitelabels[] = get_string('chart_pluginusedpersiteaxis', 'local_sitestats', array('from' => $j, 'to' => ($j+4)));
             }
 
             // Build chart heading.
@@ -309,7 +309,7 @@ class renderer extends \plugin_renderer_base {
             $chart2 = new \core\chart_line();
             $chart2->set_smooth(true);
             $chart2->add_series(new \core\chart_series(
-                    get_string('chart_pluginusedpersitelabel', 'local_sitestats'),
+                    get_string('chart_pluginusedpersiteabsolutelabel', 'local_sitestats'),
                     $pluginsusedpersitedata)
             );
             $chart2->set_labels($pluginsusedpersitelabels);
