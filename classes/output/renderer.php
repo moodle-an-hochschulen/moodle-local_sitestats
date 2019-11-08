@@ -53,13 +53,21 @@ class renderer extends \plugin_renderer_base {
         $result_sites = $DB->get_records_sql($sql_sites);
         $sumofsites = count($result_sites);
 
+        // Stop here if we have not crawled any site yet.
+        if ($sumofsites == 0) {
+            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
+            $output .= get_string('nositescrawledyet', 'local_sitestats');
+            $output .= \html_writer::end_tag('div');
+            return $output;
+        }
+
         // Get the sum of all crawled installations with plugins.
         $sql_siteswithplugins = 'SELECT DISTINCT site
              FROM {local_sitestats_plugins_site}';
         $result_siteswithplugins = $DB->get_records_sql($sql_siteswithplugins);
         $sumofsiteswithplugins = count($result_siteswithplugins);
 
-        // Only continue if we have found at least one site with a plugin.
+        // Do only if we have found at least one site with a plugin.
         if ($sumofsiteswithplugins > 0) {
 
             // Get all site records and the plugin counts from DB ordered by site name
@@ -175,12 +183,6 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
             $output .= get_string('chart_pluginusedrelativelabel', 'local_sitestats', array('number' => $sumofsites));
             $output .= \html_writer::end_tag('div');
-
-            // Otherwise.
-        } else {
-            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
-            $output .= get_string('nositescrawledyet', 'local_sitestats');
-            $output .= \html_writer::end_tag('div');
         }
 
         return $output;
@@ -207,13 +209,21 @@ class renderer extends \plugin_renderer_base {
         $result_sites = $DB->get_records_sql($sql_sites);
         $sumofsites = count($result_sites);
 
+        // Stop here if we have not crawled any site yet.
+        if ($sumofsites == 0) {
+            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
+            $output .= get_string('nositescrawledyet', 'local_sitestats');
+            $output .= \html_writer::end_tag('div');
+            return $output;
+        }
+
         // Get the sum of all crawled installations with plugins.
         $sql_siteswithplugins = 'SELECT DISTINCT site
              FROM {local_sitestats_plugins_site}';
         $result_siteswithplugins = $DB->get_records_sql($sql_siteswithplugins);
         $sumofsiteswithplugins = count($result_siteswithplugins);
 
-        // Only continue if we have found at least one site with a plugin.
+        // Do only if we have found at least one site with a plugin.
         if ($sumofsiteswithplugins > 0) {
 
             // Get all plugin records and the installation counts from DB ordered by installation count
@@ -255,12 +265,6 @@ class renderer extends \plugin_renderer_base {
             // Build base data information.
             $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
             $output .= get_string('chart_pluginusedrelativelabel', 'local_sitestats', array('number' => $sumofsites));
-            $output .= \html_writer::end_tag('div');
-
-            // Otherwise.
-        } else {
-            $output .= \html_writer::start_tag('div', array('class' => 'alert alert-info'));
-            $output .= get_string('nositescrawledyet', 'local_sitestats');
             $output .= \html_writer::end_tag('div');
         }
 
