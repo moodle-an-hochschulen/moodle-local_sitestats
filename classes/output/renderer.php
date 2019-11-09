@@ -26,6 +26,8 @@ namespace local_sitestats\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/local/sitestats/locallib.php');
+
 /**
  * The local_sitestats crawl renderer class.
  *
@@ -418,6 +420,14 @@ class renderer extends \plugin_renderer_base {
                         $mostpluginsonasite = $site->count;
                     }
                 }
+
+                // Get mean and median plugins per site.
+                $pluginonsites = array();
+                foreach ($result_sites as $site) {
+                    $pluginonsites[] = $site->count;
+                }
+                $meanpluginspersite = local_sitestats_array_mean($pluginonsites);
+                $medianpluginspersite = local_sitestats_array_median($pluginonsites);
             }
         }
 
@@ -449,6 +459,26 @@ class renderer extends \plugin_renderer_base {
             $output .= $sumofsiteswithplugins;
             $output .= \html_writer::end_tag('td');
             $output .= \html_writer::end_tag('tr');
+            if ($meanpluginspersite > 0) {
+                $output .= \html_writer::start_tag('tr');
+                $output .= \html_writer::start_tag('td');
+                $output .= get_string('metrics_basedatameanpluginspersite', 'local_sitestats');
+                $output .= \html_writer::end_tag('td');
+                $output .= \html_writer::start_tag('td');
+                $output .= $meanpluginspersite;
+                $output .= \html_writer::end_tag('td');
+                $output .= \html_writer::end_tag('tr');
+            }
+            if ($medianpluginspersite > 0) {
+                $output .= \html_writer::start_tag('tr');
+                $output .= \html_writer::start_tag('td');
+                $output .= get_string('metrics_basedatamedianpluginspersite', 'local_sitestats');
+                $output .= \html_writer::end_tag('td');
+                $output .= \html_writer::start_tag('td');
+                $output .= $medianpluginspersite;
+                $output .= \html_writer::end_tag('td');
+                $output .= \html_writer::end_tag('tr');
+            }
             if ($mostpluginsonasite > 0) {
                 $output .= \html_writer::start_tag('tr');
                 $output .= \html_writer::start_tag('td');
