@@ -43,18 +43,18 @@ if ($hassiteconfig) {
 https://qa.moodledemo.net|Moodle QA instance',
                 PARAM_RAW));
 
-        // Create plugin statistics heading.
+        // Create crawl plugins heading.
         $page->add(new admin_setting_heading('local_sitestats/crawlpluginsheading',
                 get_string('setting_crawlplugins', 'local_sitestats', null, true),
                 ''));
 
-        // Create enable plugin statistics widget.
+        // Create enable crawl plugins widget.
         $page->add(new admin_setting_configcheckbox('local_sitestats/crawlplugins',
                 get_string('setting_crawlplugins', 'local_sitestats', null, true),
                 get_string('setting_crawlplugins_desc', 'local_sitestats', null, true),
                 true));
 
-        // Create plugin statistics cURL timeout widget.
+        // Create crawl plugins cURL timeout widget.
         $page->add(new admin_setting_configtext('local_sitestats/plugincurltimeout',
                 get_string('setting_plugincurltimeout', 'local_sitestats', null, true),
                 get_string('setting_plugincurltimeout_desc', 'local_sitestats', null, true),
@@ -97,7 +97,7 @@ tool_policy',
         $page->hide_if('local_sitestats/pluginblacklist',
             'local_sitestats/crawlplugins', 'notchecked');
 
-        // Create plugin statistics crawl again delay widget.
+        // Create crawl plugins crawl again delay widget.
         $page->add(new admin_setting_configtext('local_sitestats/plugincrawlagaindelay',
             get_string('setting_plugincrawlagaindelay', 'local_sitestats', null, true),
             get_string('setting_plugincrawlagaindelay_desc', 'local_sitestats', null, true),
@@ -106,7 +106,7 @@ tool_policy',
         $page->hide_if('local_sitestats/plugincrawlagaindelay',
             'local_sitestats/crawlplugins', 'notchecked');
 
-        // Create plugin statistics chart number widget.
+        // Create crawl plugins chart number widget.
         $page->add(new admin_setting_configtext('local_sitestats/pluginchartnumber',
             get_string('setting_pluginchartnumber', 'local_sitestats', null, true),
             get_string('setting_pluginchartnumber_desc', 'local_sitestats', null, true),

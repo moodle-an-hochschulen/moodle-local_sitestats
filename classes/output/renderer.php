@@ -332,11 +332,11 @@ class renderer extends \plugin_renderer_base {
 
 
     /**
-     * Returns the content of the "View statistics" tab.
+     * Returns the content of the "View metrics" tab.
      *
      * @return string HTML
      */
-    public function render_tab_viewstatistics() {
+    public function render_tab_viewmetrics() {
         global $DB;
 
         // Get config.
@@ -420,12 +420,12 @@ class renderer extends \plugin_renderer_base {
             }
         }
 
-        // Show statistics table.
-        $output .= \html_writer::tag('h3', get_string('statistics_basedata', 'local_sitestats'));
+        // Show metrics table.
+        $output .= \html_writer::tag('h3', get_string('metrics_basedata', 'local_sitestats'));
         $output .= \html_writer::start_tag('table', array('class' => 'table table-sm table-hover table-striped table-responsive'));
         $output .= \html_writer::start_tag('tr');
         $output .= \html_writer::start_tag('td');
-        $output .= get_string('statistics_basedatasitescrawled', 'local_sitestats');
+        $output .= get_string('metrics_basedatasitescrawled', 'local_sitestats');
         $output .= \html_writer::end_tag('td');
         $output .= \html_writer::start_tag('td');
         $output .= $sumofsites;
@@ -434,7 +434,7 @@ class renderer extends \plugin_renderer_base {
         if ($config->crawlplugins == true) {
             $output .= \html_writer::start_tag('tr');
             $output .= \html_writer::start_tag('td');
-            $output .= get_string('statistics_basedatasiteswithoutplugins', 'local_sitestats');
+            $output .= get_string('metrics_basedatasiteswithoutplugins', 'local_sitestats');
             $output .= \html_writer::end_tag('td');
             $output .= \html_writer::start_tag('td');
             $output .= $sumofsites - $sumofsiteswithplugins;
@@ -442,7 +442,7 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::end_tag('tr');
             $output .= \html_writer::start_tag('tr');
             $output .= \html_writer::start_tag('td');
-            $output .= get_string('statistics_basedatasiteswithplugins', 'local_sitestats');
+            $output .= get_string('metrics_basedatasiteswithplugins', 'local_sitestats');
             $output .= \html_writer::end_tag('td');
             $output .= \html_writer::start_tag('td');
             $output .= $sumofsiteswithplugins;
@@ -451,7 +451,7 @@ class renderer extends \plugin_renderer_base {
             if ($mostpluginsonasite > 0) {
                 $output .= \html_writer::start_tag('tr');
                 $output .= \html_writer::start_tag('td');
-                $output .= get_string('statistics_basedatamostpluginsonasite', 'local_sitestats');
+                $output .= get_string('metrics_basedatamostpluginsonasite', 'local_sitestats');
                 $output .= \html_writer::end_tag('td');
                 $output .= \html_writer::start_tag('td');
                 $output .= $mostpluginsonasite;
