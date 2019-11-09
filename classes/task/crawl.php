@@ -115,8 +115,8 @@ class crawl extends \core\task\scheduled_task {
         // Startup: Plugin list
         // ************************
 
-        // Do only if plugin statistics is enabled.
-        if ($config->pluginstatistics == true) {
+        // Do only if plugin crawler is enabled.
+        if ($config->crawlplugins == true) {
 
             // Output log.
             echo get_string('crawl_pluginliststartup', 'local_sitestats') . PHP_EOL;
@@ -251,8 +251,8 @@ class crawl extends \core\task\scheduled_task {
             // Crawl: Plugin statistics
             // ************************
 
-            // Do only if plugin statistics is enabled.
-            if ($config->pluginstatistics == true) {
+            // Do only if plugin crawler is enabled.
+            if ($config->crawlplugins == true) {
 
                 // Do only if the site has not been crawled for plugins for the configured amount of days.
                 if (time() - $config->plugincrawlagaindelay * 3600 * 24 > (int)$site->pluginslastcrawled) {

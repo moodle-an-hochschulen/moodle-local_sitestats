@@ -44,14 +44,14 @@ https://qa.moodledemo.net|Moodle QA instance',
                 PARAM_RAW));
 
         // Create plugin statistics heading.
-        $page->add(new admin_setting_heading('local_sitestats/pluginstatisticsheading',
-                get_string('setting_pluginstatistics', 'local_sitestats', null, true),
+        $page->add(new admin_setting_heading('local_sitestats/crawlpluginsheading',
+                get_string('setting_crawlplugins', 'local_sitestats', null, true),
                 ''));
 
         // Create enable plugin statistics widget.
-        $page->add(new admin_setting_configcheckbox('local_sitestats/pluginstatistics',
-                get_string('setting_pluginstatistics', 'local_sitestats', null, true),
-                get_string('setting_pluginstatistics_desc', 'local_sitestats', null, true),
+        $page->add(new admin_setting_configcheckbox('local_sitestats/crawlplugins',
+                get_string('setting_crawlplugins', 'local_sitestats', null, true),
+                get_string('setting_crawlplugins_desc', 'local_sitestats', null, true),
                 true));
 
         // Create plugin statistics cURL timeout widget.
@@ -60,7 +60,7 @@ https://qa.moodledemo.net|Moodle QA instance',
                 get_string('setting_plugincurltimeout_desc', 'local_sitestats', null, true),
                 10));
         $page->hide_if('local_sitestats/plugincurltimeout',
-            'local_sitestats/pluginstatistics', 'notchecked');
+            'local_sitestats/crawlplugins', 'notchecked');
 
         // Create pluginlist widget.
         $page->add(new admin_setting_configtext('local_sitestats/pluginlist',
@@ -69,7 +69,7 @@ https://qa.moodledemo.net|Moodle QA instance',
                 'https://download.moodle.org/api/1.3/pluglist.php',
                 PARAM_URL));
         $page->hide_if('local_sitestats/pluginlist',
-            'local_sitestats/pluginstatistics', 'notchecked');
+            'local_sitestats/crawlplugins', 'notchecked');
 
         // Create plugin blacklist widget.
         $page->add(new admin_setting_configtextarea('local_sitestats/pluginblacklist',
@@ -95,7 +95,7 @@ tool_lpimportcsv
 tool_policy',
             PARAM_RAW));
         $page->hide_if('local_sitestats/pluginblacklist',
-            'local_sitestats/pluginstatistics', 'notchecked');
+            'local_sitestats/crawlplugins', 'notchecked');
 
         // Create plugin statistics crawl again delay widget.
         $page->add(new admin_setting_configtext('local_sitestats/plugincrawlagaindelay',
@@ -104,7 +104,7 @@ tool_policy',
             5,
             PARAM_INT));
         $page->hide_if('local_sitestats/plugincrawlagaindelay',
-            'local_sitestats/pluginstatistics', 'notchecked');
+            'local_sitestats/crawlplugins', 'notchecked');
 
         // Create plugin statistics chart number widget.
         $page->add(new admin_setting_configtext('local_sitestats/pluginchartnumber',
@@ -113,7 +113,7 @@ tool_policy',
             10,
             PARAM_INT));
         $page->hide_if('local_sitestats/pluginchartnumber',
-            'local_sitestats/pluginstatistics', 'notchecked');
+            'local_sitestats/crawlplugins', 'notchecked');
     }
 
     // Add settings page to navigation tree.
