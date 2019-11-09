@@ -286,13 +286,14 @@ class renderer extends \plugin_renderer_base {
                     array('number' => $config->pluginchartnumber)));
 
                 // Build chart.
-                $chart = new \core\chart_pie();
-                $chart->set_doughnut(true);
+                $chart = new \core\chart_bar();
+                $chart->set_horizontal(true);
                 $chart->add_series(new \core\chart_series(
                         get_string('chart_pluginusedabsolutelabel', 'local_sitestats', array('number' => $sumofsites)),
                         $mostusedpluginsabsolutedata)
                 );
                 $chart->set_labels($mostusedpluginslabels);
+
                 $output .= $OUTPUT->render($chart);
 
                 // Pick the plugin counts per site.
