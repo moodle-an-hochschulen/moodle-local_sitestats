@@ -339,6 +339,107 @@ class crawl extends \core\task\scheduled_task {
                 }
             }
 
+            // ************************
+            // Crawl: Core statistics
+            // ************************
+
+            // Do only if core crawler is enabled.
+            if ($config->crawlcore == true) {
+
+                // Do only if the site has not been crawled for core information for the configured amount of days.
+                if (time() - $config->corecrawlagaindelay * 3600 * 24 > (int)$site->corelastcrawled) {
+
+                    // Output log.
+                    echo get_string('crawl_corestart', 'local_sitestats', array('site' => $site->title)).PHP_EOL;
+
+                    // Init curl.
+                    $ch = curl_init();
+
+                    // Check for Moodle core version.
+                    curl_setopt ($ch, CURLOPT_URL, $site->url.'/lib/upgrade.txt');
+                    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $config->corecurltimeout);
+                    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+                    $curldoc3 = curl_exec($ch);
+
+                    // If we got the file.
+                    if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
+
+                        // Find first occurence of a version number heading.
+                        $versionfound = preg_match('/=== ([0-9]\.[0-9])\.?[0-9]? ===/', $curldoc3, $matches);
+
+                        // If we found a version, process it.
+                        if ($versionfound == 1) {
+                            // Remember version number.
+                            $coreversion = $matches[1];
+
+                            // Create database record.
+                            $coreversion_record = new \stdClass();
+                            $coreversion_record->site = $site->id;
+                            $coreversion_record->key = 'coreversion';
+                            $coreversion_record->value = $coreversion;
+
+                            // Check if we have recorded this information before in DB.
+                            $coreversionbefore_result = $DB->get_record('local_sitestats_core', array('site' => $site->id, 'key' => get_string('coreversion', 'local_sitestats')));
+
+                            // If there is already a record.
+                            if ($coreversionbefore_result !== false) {
+                                $coreversion_record->id = $coreversionbefore_result->id;
+                                $ret = $DB->update_record('local_sitestats_core', $coreversion_record, false);
+
+                                // If not.
+                            } else {
+                                $ret = $DB->insert_record('local_sitestats_core', $coreversion_record, false);
+                            }
+                            if ($ret === true) {
+                                // Output log.
+                                echo get_string('crawl_coreinformationfound', 'local_sitestats', array('site' => $site->title, 'key' => get_string('coreversion', 'local_sitestats'), 'value' => $coreversion)) . PHP_EOL;
+                            } else {
+                                // Quit
+                                echo get_string('crawl_coreinformationfounderror', 'local_sitestats', array('key' => get_string('coreversion', 'local_sitestats'))) . PHP_EOL;
+                                return false;
+                            }
+                            unset ($ret);
+                        }
+                        // Otherwise we have to say that we did not get this information.
+                        else {
+                            // Output log.
+                            echo get_string('crawl_coreinformationnotfound', 'local_sitestats', array('site' => $site->title, 'key' => get_string('coreversion', 'local_sitestats'))).PHP_EOL;
+                        }
+
+                        // If there was a timeout, head over to next site.
+                    } else if (curl_errno($ch) == CURLE_OPERATION_TIMEOUTED) {
+                        // Output log.
+                        echo get_string('crawl_sitetimeout', 'local_sitestats', array('site' => $site->title)).PHP_EOL;
+                    }
+                    // Otherwise we have to say that we did not get this information.
+                    else {
+                        // Output log.
+                        echo get_string('crawl_coreinformationnotfound', 'local_sitestats', array('site' => $site->title, 'key' => get_string('coreversion', 'local_sitestats'))).PHP_EOL;
+                    }
+
+                    // Curl close
+                    curl_close($ch);
+
+                    // Remember the timestamp of crawling the site's core information.
+                    $siteupdate_record = new \stdClass();
+                    $siteupdate_record->id = $site->id;
+                    $siteupdate_record->corelastcrawled = time();
+                    $ret = $DB->update_record('local_sitestats_sites', $siteupdate_record);
+                    if ($ret === true) {
+                        // Output log.
+                        echo get_string('crawl_corefinish', 'local_sitestats', array('site' => $site->title)).PHP_EOL;
+                    } else {
+                        // Quit
+                        echo get_string('crawl_siteremembercorecrawlederror', 'local_sitestats', array('site' =>  $site->title)) . PHP_EOL;
+                        return false;
+                    }
+                    unset ($ret);
+                } else {
+                    // Output log.
+                    echo get_string('crawl_coreskipped', 'local_sitestats', array('site' => $site->title)).PHP_EOL;
+                }
+            }
+
             // Remember the timestamp of crawling the site.
             $siteupdate_record = new \stdClass();
             $siteupdate_record->id = $site->id;

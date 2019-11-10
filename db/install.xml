@@ -11,6 +11,7 @@
         <FIELD NAME="url" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="sitelastcrawled" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="pluginslastcrawled" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="corelastcrawled" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -43,6 +44,18 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk_plugin" TYPE="foreign" FIELDS="plugin" REFTABLE="local_sitestats_plugins" REFFIELDS="id"/>
+        <KEY NAME="fk_site" TYPE="foreign" FIELDS="site" REFTABLE="local_sitestats_sites" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_sitestats_core" COMMENT="Table for plugin local_sitestats which keeps the core information">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="site" TYPE="int" LENGTH="5" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="key" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="value" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk_site" TYPE="foreign" FIELDS="site" REFTABLE="local_sitestats_sites" REFFIELDS="id"/>
       </KEYS>
     </TABLE>

@@ -114,6 +114,34 @@ tool_policy',
             PARAM_INT));
         $page->hide_if('local_sitestats/pluginchartnumber',
             'local_sitestats/crawlplugins', 'notchecked');
+
+        // Create crawl core heading.
+        $page->add(new admin_setting_heading('local_sitestats/crawlcoreheading',
+            get_string('setting_crawlcore', 'local_sitestats', null, true),
+            ''));
+
+        // Create enable crawl core widget.
+        $page->add(new admin_setting_configcheckbox('local_sitestats/crawlcore',
+            get_string('setting_crawlcore', 'local_sitestats', null, true),
+            get_string('setting_crawlcore_desc', 'local_sitestats', null, true),
+            true));
+
+        // Create crawl core cURL timeout widget.
+        $page->add(new admin_setting_configtext('local_sitestats/corecurltimeout',
+            get_string('setting_corecurltimeout', 'local_sitestats', null, true),
+            get_string('setting_corecurltimeout_desc', 'local_sitestats', null, true),
+            10));
+        $page->hide_if('local_sitestats/corecurltimeout',
+            'local_sitestats/crawlcore', 'notchecked');
+
+        // Create crawl core crawl again delay widget.
+        $page->add(new admin_setting_configtext('local_sitestats/corecrawlagaindelay',
+            get_string('setting_corecrawlagaindelay', 'local_sitestats', null, true),
+            get_string('setting_corecrawlagaindelay_desc', 'local_sitestats', null, true),
+            5,
+            PARAM_INT));
+        $page->hide_if('local_sitestats/corecrawlagaindelay',
+            'local_sitestats/crawlcore', 'notchecked');
     }
 
     // Add settings page to navigation tree.

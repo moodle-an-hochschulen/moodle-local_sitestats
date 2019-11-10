@@ -52,7 +52,7 @@ class renderer extends \plugin_renderer_base {
         $output = '';
 
         // Get the sum of all crawled installations.
-        $sql_sites = 'SELECT id, sitelastcrawled
+        $sql_sites = 'SELECT id, url, title, sitelastcrawled
              FROM {local_sitestats_sites}
              WHERE sitelastcrawled IS NOT NULL';
         $result_sites = $DB->get_records_sql($sql_sites);
@@ -79,13 +79,13 @@ class renderer extends \plugin_renderer_base {
             if ($sumofsiteswithplugins > 0) {
 
                 // Get all site records and the plugin counts from DB ordered by site name
-                $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site)
+                $sql_sitesplugins = 'SELECT site.id, site.url, site.title, count(jointable.site)
                     FROM {local_sitestats_sites} AS site
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON site.id = jointable.site
                     GROUP BY site.id, site.url, site.title
                     ORDER BY title ASC';
-                $result_sites = $DB->get_records_sql($sql_sites);
+                $result_sitesplugins = $DB->get_records_sql($sql_sitesplugins);
 
                 // Get all plugin records and the installation counts from DB ordered by installation count
                 $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
@@ -99,10 +99,10 @@ class renderer extends \plugin_renderer_base {
                 // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
                 // but rather some strange webserver configuration.
                 $countfoundplugins = count($result_plugins);
-                foreach ($result_sites as $s) {
+                foreach ($result_sitesplugins as $s) {
                     if ($s->count == $countfoundplugins) {
                         // Remove site entry from list of sites.
-                        unset ($result_sites[$s->id]);
+                        unset ($result_sitesplugins[$s->id]);
                         // Decrease plugin count in list of plugins.
                         foreach ($result_plugins as $p) {
                             $currentcount = $result_plugins[$p->id]->count;
@@ -126,7 +126,7 @@ class renderer extends \plugin_renderer_base {
                 // Empty cell left top.
                 $output .= \html_writer::tag('th', '&nbsp;');
                 // Headings for all sites.
-                foreach ($result_sites as $site) {
+                foreach ($result_sitesplugins as $site) {
                     $output .= \html_writer::start_tag('th');
                     $output .= \html_writer::link($site->url, $site->title);
                     $output .= \html_writer::end_tag('th');
@@ -156,7 +156,7 @@ class renderer extends \plugin_renderer_base {
                     $output .= '(' . $plugin->frankenstyle . ')';
                     $output .= \html_writer::end_tag('td');
                     // One cell per site
-                    foreach ($result_sites as $site) {
+                    foreach ($result_sitesplugins as $site) {
                         // Is plugin installed
                         if (array_key_exists($site->url, $result_pluginsites)) {
                             $output .= \html_writer::start_tag('td');
@@ -178,13 +178,77 @@ class renderer extends \plugin_renderer_base {
                 $output .= \html_writer::start_tag('tr');
                 $output .= \html_writer::tag('td', 'Sum of installed plugins');
                 // Cells for all sites
-                foreach ($result_sites as $site) {
+                foreach ($result_sitesplugins as $site) {
                     $output .= \html_writer::tag('td', $site->count);
                 }
                 // Empty cell right bottom.
                 $output .= \html_writer::tag('td', '&nbsp;');
                 $output .= \html_writer::end_tag('tr');
                 $output .= \html_writer::end_tag('tfoot');
+                $output .= \html_writer::end_tag('table');
+            }
+        }
+
+        // Do only if core crawler is enabled.
+        if ($config->crawlcore == true) {
+
+            // Get the sum of all crawled installations with core information.
+            $sql_siteswithcoreinformation = 'SELECT DISTINCT core.site AS site, sites.title
+             FROM {local_sitestats_core} AS core
+             JOIN {local_sitestats_sites} AS sites
+             ON core.site = sites.id
+             ORDER BY sites.title';
+            $result_siteswithcoreinformation = $DB->get_records_sql($sql_siteswithcoreinformation);
+            $sumofsiteswithcoreinformation = count($result_siteswithcoreinformation);
+
+            // Do only if we have found at least one site with a core information.
+            if ($sumofsiteswithcoreinformation > 0) {
+
+                // Build table heading.
+                $output .= \html_writer::tag('h3', get_string('table_coreinformationlabel', 'local_sitestats'));
+
+                // Start table.
+                $output .= \html_writer::start_tag('table', array('class' => 'table table-sm table-hover table-striped table-responsive'));
+                // Heading.
+                $output .= \html_writer::start_tag('thead');
+                $output .= \html_writer::start_tag('tr');
+                // Empty cell left top.
+                $output .= \html_writer::tag('th', '&nbsp;');
+                // Headings for all sites.
+                foreach ($result_siteswithcoreinformation as $site) {
+                    $output .= \html_writer::start_tag('th');
+                    $output .= \html_writer::link($result_sites[$site->site]->url, $result_sites[$site->site]->title);
+                    $output .= \html_writer::end_tag('th');
+                }
+                // End of line.
+                $output .= \html_writer::end_tag('tr');
+                $output .= \html_writer::end_tag('thead');
+
+                // Row for core version.
+                $output .= \html_writer::start_tag('tr');
+                $output .= \html_writer::start_tag('td');
+                $output .= get_string('coreversion', 'local_sitestats');
+                $output .= \html_writer::end_tag('td');
+
+                // One cell per site
+                foreach ($result_siteswithcoreinformation as $site) {
+
+                    // Get information from DB.
+                    $result_coreversion = $DB->get_field('local_sitestats_core', 'value', array('site' => $site->site, 'key' => 'coreversion'), IGNORE_MISSING);
+
+                    // If we have this information
+                    if ($result_coreversion !== false) {
+                        $output .= \html_writer::start_tag('td');
+                        $output .= \html_writer::tag('span', $result_coreversion, array('class' => 'label label-success'));
+                        $output .= \html_writer::end_tag('td');
+                    } else {
+                        $output .= \html_writer::start_tag('td');
+                        $output .= \html_writer::tag('span', get_string('unknown', 'local_sitestats'), array('class' => 'label label-danger'));
+                        $output .= \html_writer::end_tag('td');
+                    }
+                }
+
+                // End table.
                 $output .= \html_writer::end_tag('table');
             }
         }
@@ -327,6 +391,51 @@ class renderer extends \plugin_renderer_base {
                 );
                 $chart2->set_labels($pluginsusedpersitelabels);
                 $output .= $OUTPUT->render($chart2);
+            }
+        }
+
+        // Do only if core crawler is enabled.
+        if ($config->crawlcore == true) {
+
+            // Get all crawled installations with core information 'coreversion'.
+            $sql_siteswithcoreversion = 'SELECT site
+             FROM {local_sitestats_core} AS core
+             WHERE core.key = \'coreversion\'';
+            $result_siteswithcoreversion = $DB->get_records_sql($sql_siteswithcoreversion);
+            $sumofsiteswithcoreversion = count($result_siteswithcoreversion);
+
+            // Get all crawled installations with core information 'coreversion'.
+            $sql_siteswithcoreversiondata = 'SELECT core.value AS coreversion, count(core.value)
+             FROM {local_sitestats_core} AS core
+             WHERE core.key = \'coreversion\'
+             GROUP BY core.value
+             ORDER BY core.value';
+            $result_siteswithcoreversiondata = $DB->get_records_sql($sql_siteswithcoreversiondata);
+
+            // Do only if we have found at least one site with a core information 'coreversion'.
+            if ($sumofsiteswithcoreversion > 0) {
+
+                // Build chart heading.
+                $output .= \html_writer::tag('h3', get_string('chart_coreversionlabel', 'local_sitestats'));
+
+                // Build chart data.
+                $coreversionsuseddata = array();
+                $coreversionsusedlabel = array();
+                foreach ($result_siteswithcoreversiondata AS $v) {
+                    $coreversionsuseddata[] = $v->count;
+                    $coreversionsusedlabel[] = $v->coreversion;
+                }
+
+                // Build chart.
+                $chart = new \core\chart_pie();
+                $chart->set_doughnut(true);
+                $chart->add_series(new \core\chart_series(
+                        get_string('chart_coreversionabsolutelabel', 'local_sitestats', array('number' => $sumofsiteswithcoreversion)),
+                        $coreversionsuseddata)
+                );
+                $chart->set_labels($coreversionsusedlabel);
+
+                $output .= $OUTPUT->render($chart);
             }
         }
 

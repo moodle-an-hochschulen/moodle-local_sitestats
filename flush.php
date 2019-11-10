@@ -61,6 +61,14 @@ if ($ret3 == true) {
     \core\notification::error(get_string('flush_error', 'local_sitestats', 'local_sitestats_plugins_site'));
 }
 
+// Action: Flush local_sitestats_core table.
+$ret4 = $DB->delete_records('local_sitestats_core');
+if ($ret4 == true) {
+    \core\notification::success(get_string('flush_success', 'local_sitestats', 'local_sitestats_core'));
+} else {
+    \core\notification::error(get_string('flush_error', 'local_sitestats', 'local_sitestats_core'));
+}
+
 // Back button.
 $backurl = new \moodle_url('/local/sitestats/index.php');
 echo $OUTPUT->box($OUTPUT->single_button($backurl, get_string('back')), 'clearfix mdl-align');
