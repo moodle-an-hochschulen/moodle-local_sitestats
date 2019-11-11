@@ -77,6 +77,7 @@ https://qa.moodledemo.net|Moodle QA instance',
             get_string('setting_pluginblacklist_desc', 'local_sitestats', null, true),
             'atto_recordrtc
 block_calendar_month
+block_course_overview
 format_singleactivity
 gradereport_history
 message_airnotifier
