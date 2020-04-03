@@ -234,7 +234,7 @@ class renderer extends \plugin_renderer_base {
                 foreach ($result_siteswithcoreinformation as $site) {
 
                     // Get information from DB.
-                    $result_coreversion = $DB->get_field('local_sitestats_core', 'value', array('site' => $site->site, 'key' => 'coreversion'), IGNORE_MISSING);
+                    $result_coreversion = $DB->get_field('local_sitestats_core', 'value', array('site' => $site->site, 'name' => 'coreversion'), IGNORE_MISSING);
 
                     // If we have this information
                     if ($result_coreversion !== false) {
