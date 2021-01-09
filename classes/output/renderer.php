@@ -160,11 +160,11 @@ class renderer extends \plugin_renderer_base {
                         // Is plugin installed
                         if (array_key_exists($site->url, $result_pluginsites)) {
                             $output .= \html_writer::start_tag('td');
-                            $output .= \html_writer::tag('span', 'Yes', array('class' => 'label label-success'));
+                            $output .= \html_writer::tag('span', 'Yes', array('class' => 'badge badge-success'));
                             $output .= \html_writer::end_tag('td');
                         } else {
                             $output .= \html_writer::start_tag('td');
-                            $output .= \html_writer::tag('span', 'No', array('class' => 'label label-danger'));
+                            $output .= \html_writer::tag('span', 'No', array('class' => 'badge badge-danger'));
                             $output .= \html_writer::end_tag('td');
                         }
                     }
@@ -239,11 +239,11 @@ class renderer extends \plugin_renderer_base {
                     // If we have this information
                     if ($result_coreversion !== false) {
                         $output .= \html_writer::start_tag('td');
-                        $output .= \html_writer::tag('span', $result_coreversion, array('class' => 'label label-success'));
+                        $output .= \html_writer::tag('span', $result_coreversion, array('class' => 'badge badge-success'));
                         $output .= \html_writer::end_tag('td');
                     } else {
                         $output .= \html_writer::start_tag('td');
-                        $output .= \html_writer::tag('span', get_string('unknown', 'local_sitestats'), array('class' => 'label label-danger'));
+                        $output .= \html_writer::tag('span', get_string('unknown', 'local_sitestats'), array('class' => 'badge badge-danger'));
                         $output .= \html_writer::end_tag('td');
                     }
                 }
