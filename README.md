@@ -1,7 +1,7 @@
 moodle-local_sitestats
 ======================
 
-[![Build Status](https://travis-ci.com/moodleuulm/moodle-local_sitestats.svg?branch=master)](https://travis-ci.com/moodleuulm/moodle-local_sitestats)
+[![Moodle Plugin CI](https://github.com/moodleuulm/moodle-local_sitestats/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/moodleuulm/moodle-local_sitestats/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 
 Moodle crawler plugin which connects to other Moodle sites to gather information about the plugins which they are running.
 This is a research plugin to be used on research Moodle instances. Do not use this plugin in production environments.
