@@ -365,18 +365,27 @@ class renderer extends \plugin_renderer_base {
                 // Pick the plugin counts per site.
                 $pluginsusedpersiterawdata = array();
                 foreach ($result_sites as $s) {
-                    if ($pluginsusedpersiterawdata[$s->count]) {
+                    if (array_key_exists($s->count, $pluginsusedpersiterawdata)) {
                         $pluginsusedpersiterawdata[$s->count]++;
                     } else {
                         $pluginsusedpersiterawdata[$s->count] = 1;
                     };
                 }
+
+                $rangekey = 0;
                 $pluginsusedpersitedata = array();
                 $pluginsusedpersitelabels = array();
                 for ($j = 1; $j <= max(array_keys($pluginsusedpersiterawdata)); $j += 5) {
-                    $pluginsusedpersitedata[] = $pluginsusedpersiterawdata[$j] + $pluginsusedpersiterawdata[$j + 1] +
-                        $pluginsusedpersiterawdata[$j + 2] + $pluginsusedpersiterawdata[$j + 3] + $pluginsusedpersiterawdata[$j + 4];
-                    $pluginsusedpersitelabels[] = get_string('chart_pluginusedpersiteaxis', 'local_sitestats', array('from' => $j, 'to' => ($j + 4)));
+                    $pluginsusedpersitedata[$rangekey] = 0;
+
+                    for ($i = 0; $i < 5; $i++) {
+                        $pluginsusedpersitedata[$rangekey] += $pluginsusedpersiterawdata[$j + $i] ?? 0;
+                    }
+
+                    $pluginsusedpersitelabels[$rangekey] =
+                        get_string('chart_pluginusedpersiteaxis', 'local_sitestats', ['from' => $j, 'to' => ($j + 4)]);
+
+                    $rangekey++;
                 }
 
                 // Build chart heading.
