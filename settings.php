@@ -19,6 +19,7 @@
  *
  * @package     local_sitestats
  * @copyright   2019 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @author      2021 Adrian Perez, Fernfachhochschule Schweiz (FFHS) <adrian.perez@ffhs.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,42 +33,42 @@ if ($hassiteconfig) {
 
         // Create crawl sites heading.
         $page->add(new admin_setting_heading('local_sitestats/crawlsitesheading',
-                get_string('setting_crawlsites', 'local_sitestats', null, true),
-                ''));
+            get_string('setting_crawlsites', 'local_sitestats', null, true),
+            ''));
 
         // Create crawl sites widget.
         $page->add(new admin_setting_configtextarea('local_sitestats/crawlsites',
-                get_string('setting_crawlsites', 'local_sitestats', null, true),
-                get_string('setting_crawlsites_desc', 'local_sitestats', null, true),
-                'https://sandbox.moodledemo.net|Moodle demo instance
+            get_string('setting_crawlsites', 'local_sitestats', null, true),
+            get_string('setting_crawlsites_desc', 'local_sitestats', null, true),
+            'https://sandbox.moodledemo.net|Moodle demo instance
 https://qa.moodledemo.net|Moodle QA instance',
-                PARAM_RAW));
+            PARAM_RAW));
 
         // Create crawl plugins heading.
         $page->add(new admin_setting_heading('local_sitestats/crawlpluginsheading',
-                get_string('setting_crawlplugins', 'local_sitestats', null, true),
-                ''));
+            get_string('setting_crawlplugins', 'local_sitestats', null, true),
+            ''));
 
         // Create enable crawl plugins widget.
         $page->add(new admin_setting_configcheckbox('local_sitestats/crawlplugins',
-                get_string('setting_crawlplugins', 'local_sitestats', null, true),
-                get_string('setting_crawlplugins_desc', 'local_sitestats', null, true),
-                true));
+            get_string('setting_crawlplugins', 'local_sitestats', null, true),
+            get_string('setting_crawlplugins_desc', 'local_sitestats', null, true),
+            true));
 
         // Create crawl plugins cURL timeout widget.
         $page->add(new admin_setting_configtext('local_sitestats/plugincurltimeout',
-                get_string('setting_plugincurltimeout', 'local_sitestats', null, true),
-                get_string('setting_plugincurltimeout_desc', 'local_sitestats', null, true),
-                10));
+            get_string('setting_plugincurltimeout', 'local_sitestats', null, true),
+            get_string('setting_plugincurltimeout_desc', 'local_sitestats', null, true),
+            10));
         $page->hide_if('local_sitestats/plugincurltimeout',
             'local_sitestats/crawlplugins', 'notchecked');
 
         // Create pluginlist widget.
         $page->add(new admin_setting_configtext('local_sitestats/pluginlist',
-                get_string('setting_pluginlist', 'local_sitestats', null, true),
-                get_string('setting_pluginlist_desc', 'local_sitestats', null, true),
-                'https://download.moodle.org/api/1.3/pluglist.php',
-                PARAM_URL));
+            get_string('setting_pluginlist', 'local_sitestats', null, true),
+            get_string('setting_pluginlist_desc', 'local_sitestats', null, true),
+            'https://download.moodle.org/api/1.3/pluglist.php',
+            PARAM_URL));
         $page->hide_if('local_sitestats/pluginlist',
             'local_sitestats/crawlplugins', 'notchecked');
 
@@ -97,6 +98,15 @@ tool_policy',
             PARAM_RAW));
         $page->hide_if('local_sitestats/pluginblacklist',
             'local_sitestats/crawlplugins', 'notchecked');
+
+        // Create custom plugin widget.
+        $page->add(new admin_setting_configtextarea('local_sitestats/plugincustomlist',
+            get_string('setting_plugincustomlist', 'local_sitestats', null, true),
+            get_string('setting_plugincustomlist_desc', 'local_sitestats', null, true),
+            '',
+            PARAM_RAW));
+        $page->hide_if('local_sitestats/plugincustomlist',
+            'local_sitestats/crawlplugins');
 
         // Create crawl plugins crawl again delay widget.
         $page->add(new admin_setting_configtext('local_sitestats/plugincrawlagaindelay',
