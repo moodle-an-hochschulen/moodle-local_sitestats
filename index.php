@@ -32,6 +32,7 @@ global $CFG, $PAGE, $OUTPUT;
 require_once(__DIR__ . '/../../config.php');
 
 // Permissions check.
+require_login();
 require_capability('local/sitestats:view', context_system::instance());
 
 // Initialize page.
