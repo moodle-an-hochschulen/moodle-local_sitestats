@@ -87,12 +87,14 @@ qtype_ddmarker
 qtype_ddwtos
 qtype_gapselect
 quizaccess_offlineattempts
+quizaccess_seb
 repository_areafiles
 repository_skydrive
 theme_classic
 tinymce_managefiles
 tool_dataprivacy
 tool_lpimportcsv
+tool_moodlenet
 tool_policy',
             PARAM_RAW));
         $page->hide_if('local_sitestats/pluginblacklist',
