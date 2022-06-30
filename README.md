@@ -1,7 +1,7 @@
 moodle-local_sitestats
 ======================
 
-[![Moodle Plugin CI](https://github.com/moodleuulm/moodle-local_sitestats/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/moodleuulm/moodle-local_sitestats/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
+[![Moodle Plugin CI](https://github.com/moodle-an-hochschulen/moodle-local_sitestats/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/moodle-an-hochschulen/moodle-local_sitestats/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 
 Moodle crawler plugin which connects to other Moodle sites to gather information about the plugins which they are running.
 This is a research plugin to be used on research Moodle instances. Do not use this plugin in production environments.
@@ -51,7 +51,7 @@ Plugin repositories
 This plugin is not published in the Moodle plugins repository.
 
 The latest development version can be found on Github:
-https://github.com/moodleuulm/moodle-local_sitestats
+https://github.com/moodle-an-hochschulen/moodle-local_sitestats
 
 
 Issue reports
@@ -60,7 +60,7 @@ Issue reports
 This plugin is provided as-is, without any warranty, without any support and without any development roadmap.
 
 Please report any issues on Github:
-https://github.com/moodleuulm/moodle-local_sitestats/issues
+https://github.com/moodle-an-hochschulen/moodle-local_sitestats/issues
 
 
 Right-to-left support
@@ -70,24 +70,28 @@ This plugin has not been tested with Moodle's support for right-to-left (RTL) la
 If you want to use this plugin with a RTL language and it doesn't work as-is, you are free to send us a pull request on Github with modifications.
 
 
-PHP7 Support
-------------
-
-Since Moodle 3.4 core, PHP7 is mandatory. We are developing and testing this plugin for PHP7 only.
-
-
 Maintainers
 -----------
 
-Ulm University\
-Communication and Information Centre (kiz)\
-Alexander Bias
+The plugin is maintained by\
+Moodle an Hochschulen e.V.
 
 
 Copyright
 ---------
 
+The copyright of this plugin is held by\
+Moodle an Hochschulen e.V.
+
+Individual copyrights of individual developers are tracked in PHPDoc comments and Git commits.
+
+
+Initial copyright
+-----------------
+
+This plugin was initially built, maintained and published by\
 Ulm University\
 Communication and Information Centre (kiz)\
 Alexander Bias
 
+It was contributed to the Moodle an Hochschulen e.V. plugin catalogue in 2022.
