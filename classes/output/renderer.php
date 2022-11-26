@@ -88,7 +88,7 @@ class renderer extends \plugin_renderer_base {
                 $result_sitesplugins = $DB->get_records_sql($sql_sitesplugins);
 
                 // Get all plugin records and the installation counts from DB ordered by installation count
-                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
+                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, pl.pluginurl, count(pl.frankenstyle)
                     FROM {local_sitestats_plugins} AS pl
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
@@ -149,9 +149,14 @@ class renderer extends \plugin_renderer_base {
                         WHERE jointable.plugin = ' . $plugin->id;
                     $result_pluginsites = $DB->get_records_sql($sql_pluginsites);
                     // Table row for plugin
+                    $pluginlink = 'https://moodle.org/plugins/view/' . $plugin->frankenstyle;
+                    if (!empty($plugin->pluginurl)) {
+                        $pluginlink = $plugin->pluginurl;
+                    }
+
                     $output .= \html_writer::start_tag('tr');
                     $output .= \html_writer::start_tag('td');
-                    $output .= \html_writer::link('https://moodle.org/plugins/view/' . $plugin->frankenstyle, $plugin->title);
+                    $output .= \html_writer::link($pluginlink, $plugin->title, ['target' => '_blank']);
                     $output .= \html_writer::empty_tag('br');
                     $output .= '(' . $plugin->frankenstyle . ')';
                     $output .= \html_writer::end_tag('td');

@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_sitestats';
-$plugin->version = 2019080106;
+$plugin->version = 2019080107;
 $plugin->release = 'v3.7-r1';
 $plugin->requires = 2019052000;
 $plugin->maturity = MATURITY_RC;

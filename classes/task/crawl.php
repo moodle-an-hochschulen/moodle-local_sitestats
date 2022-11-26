@@ -19,6 +19,7 @@
  *
  * @package     local_sitestats
  * @copyright   2019 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @author      2021 Adrian Perez, Fernfachhochschule Schweiz (FFHS) <adrian.perez@ffhs.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -185,6 +186,26 @@ class crawl extends \core\task\scheduled_task {
                 $blacklistedplugins[] = $plugin;
             }
 
+            // Gather list of custom plugins.
+            $custompluginsraw = explode("\n", $config->plugincustomlist);
+            foreach ($custompluginsraw as $plugin) {
+                // Trim setting lines.
+                $plugin = trim($plugin);
+
+                // Skip empty lines.
+                if (strlen($plugin) == 0) {
+                    continue;
+                }
+
+                $plugin = explode('|', $plugin);
+
+                $customplugin['name'] = $plugin[1];
+                $customplugin['component'] = $plugin[0];
+                $customplugin['pluginurl'] = $plugin[2];
+
+                $pluginjson['plugins'][] = $customplugin;
+            }
+
             // Iterate over all plugins in the plugin list.
             foreach ($pluginjson['plugins'] as $plugin_info) {
                 // Generate plugin path.
@@ -192,6 +213,7 @@ class crawl extends \core\task\scheduled_task {
                 $plugin_title = clean_param($plugin_info['name'], PARAM_RAW_TRIMMED);
                 $plugin_component = substr($plugin_frankenstyle, 0, strpos($plugin_frankenstyle, '_'));
                 $plugin_name = substr($plugin_frankenstyle, strpos($plugin_frankenstyle, '_') + 1);
+                $plugin_url = isset($plugin_info['pluginurl']) ? clean_param($plugin_info['pluginurl'], PARAM_URL) : '';
 
                 // Skip plugin if it is blacklisted in our configuration.
                 if (in_array($plugin_frankenstyle, $blacklistedplugins)) {
@@ -215,6 +237,7 @@ class crawl extends \core\task\scheduled_task {
                     $plugin_record->title = $plugin_title;
                     $plugin_record->frankenstyle = $plugin_frankenstyle;
                     $plugin_record->pluginpath = $plugin_path;
+                    $plugin_record->pluginurl = $plugin_url;
                     $plugin_record->blacklisted = $plugin_blacklisted;
                     $ret = $DB->insert_record('local_sitestats_plugins', $plugin_record, false);
                     if ($ret === true) {
