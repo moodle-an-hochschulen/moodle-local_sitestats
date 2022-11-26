@@ -19,6 +19,7 @@
  *
  * @package     local_sitestats
  * @copyright   2019 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @author      2021 Adrian Perez, Fernfachhochschule Schweiz (FFHS) <adrian.perez@ffhs.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -106,3 +107,7 @@ $string['table_coreinformationlabel'] = 'Found core information';
 $string['table_pluginusedlabel'] = 'Found plugin installations ordered by frequency of occurence';
 $string['taskcrawl'] = 'Crawl Moodle instances for Site statistics';
 $string['unknown'] = 'Unknown';
+$string['sitestats:crawl'] = 'Crawl sites for statistics';
+$string['sitestats:flush'] = 'Flush all site statistics data';
+$string['sitestats:settings'] = 'Configure site statistics settings';
+$string['sitestats:view'] = 'View site statistics data';
