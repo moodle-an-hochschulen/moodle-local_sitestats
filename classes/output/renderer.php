@@ -96,25 +96,6 @@ class renderer extends \plugin_renderer_base {
                     ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
                 $result_plugins = $DB->get_records_sql($sql_plugins);
 
-                // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
-                // but rather some strange webserver configuration.
-                $countfoundplugins = count($result_plugins);
-                foreach ($result_sitesplugins as $s) {
-                    if ($s->count == $countfoundplugins) {
-                        // Remove site entry from list of sites.
-                        unset ($result_sitesplugins[$s->id]);
-                        // Decrease plugin count in list of plugins.
-                        foreach ($result_plugins as $p) {
-                            $currentcount = $result_plugins[$p->id]->count;
-                            if ($currentcount - 1 > 0) {
-                                $result_plugins[$p->id]->count = $currentcount - 1;
-                            } else {
-                                unset($result_plugins[$p->id]);
-                            }
-                        }
-                    }
-                }
-
                 // Build table heading.
                 $output .= \html_writer::tag('h3', get_string('table_pluginusedlabel', 'local_sitestats'));
 
@@ -315,25 +296,6 @@ class renderer extends \plugin_renderer_base {
                     ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
                 $result_plugins = $DB->get_records_sql($sql_plugins);
 
-                // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
-                // but rather some strange webserver configuration.
-                $countfoundplugins = count($result_plugins);
-                foreach ($result_sites as $s) {
-                    if ($s->count == $countfoundplugins) {
-                        // Remove site entry from list of sites.
-                        unset ($result_sites[$s->id]);
-                        // Decrease plugin count in list of plugins.
-                        foreach ($result_plugins as $p) {
-                            $currentcount = $result_plugins[$p->id]->count;
-                            if ($currentcount - 1 > 0) {
-                                $result_plugins[$p->id]->count = $currentcount - 1;
-                            } else {
-                                unset($result_plugins[$p->id]);
-                            }
-                        }
-                    }
-                }
-
                 // Pick the most used plugins.
                 $i = 0;
                 $mostusedpluginsabsolutedata = array();
@@ -501,25 +463,6 @@ class renderer extends \plugin_renderer_base {
                     GROUP BY pl.id, pl.frankenstyle, pl.title
                     ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
                 $result_plugins = $DB->get_records_sql($sql_plugins);
-
-                // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
-                // but rather some strange webserver configuration.
-                $countfoundplugins = count($result_plugins);
-                foreach ($result_sites as $s) {
-                    if ($s->count == $countfoundplugins) {
-                        // Remove site entry from list of sites.
-                        unset ($result_sites[$s->id]);
-                        // Decrease plugin count in list of plugins.
-                        foreach ($result_plugins as $p) {
-                            $currentcount = $result_plugins[$p->id]->count;
-                            if ($currentcount - 1 > 0) {
-                                $result_plugins[$p->id]->count = $currentcount - 1;
-                            } else {
-                                unset($result_plugins[$p->id]);
-                            }
-                        }
-                    }
-                }
 
                 // Get most plugins on a site.
                 $mostpluginsonasite = 0;
