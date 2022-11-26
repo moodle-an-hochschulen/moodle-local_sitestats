@@ -303,17 +303,23 @@ class crawl extends \core\task\scheduled_task {
                                 echo get_string('crawl_pluginfound', 'local_sitestats', array('site' => $site->title, 'plugin' => $plugin->frankenstyle)).PHP_EOL;
                             }
 
+                            continue;
                             // If there was a timeout, head over to next site.
                         } else if (curl_errno($ch) == CURLE_OPERATION_TIMEOUTED) {
                             // Output log.
                             echo get_string('crawl_sitetimeout', 'local_sitestats', array('site' => $site->title)).PHP_EOL;
                             break;
                         }
-                        // Otherwise we expect that the plugin is not installed.
-                        else {
-                            // Output log.
-                            echo get_string('crawl_pluginnotfound', 'local_sitestats', array('site' => $site->title, 'plugin' => $plugin->frankenstyle)).PHP_EOL;
+
+                        // Remove the plugin if it was not found any more but was installed before.
+                        if ($pluginfoundbefore_result =
+                            $DB->get_record('local_sitestats_plugins_site', array('site' => $site->id, 'plugin' => $plugin->id))) {
+                            $DB->delete_records('local_sitestats_plugins_site', ['id' => $pluginfoundbefore_result->id]);
                         }
+
+                        // We expect that the plugin is not installed.
+                        echo get_string('crawl_pluginnotfound', 'local_sitestats',
+                                array('site' => $site->title, 'plugin' => $plugin->frankenstyle)) . PHP_EOL;
                     }
 
                     // Curl close
