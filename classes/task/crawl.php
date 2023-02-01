@@ -106,6 +106,21 @@ class crawl extends \core\task\scheduled_task {
                         return false;
                     }
                     unset ($ret);
+
+                    continue;
+                }
+
+                // Remove the site if it is not found any more but was installed before.
+                $records = $DB->get_records('local_sitestats_sites');
+                foreach ($records as $record) {
+                    $record_result = $DB->get_record('local_sitestats_sites', ['id' => $record->id]);
+                    if ($record_result->url !== $site_url) {
+                        $DB->delete_records('local_sitestats_sites', ['id' => $record->id]);
+                        $DB->delete_records('local_sitestats_core', ['site' => $record->id]);
+                        $DB->delete_records('local_sitestats_plugins_site', ['site' => $record->id]);
+
+                        echo get_string('crawl_sitedeleted', 'local_sitestats', ['site' => $record->title]) . PHP_EOL;
+                    }
                 }
             }
         }

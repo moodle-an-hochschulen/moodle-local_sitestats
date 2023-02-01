@@ -60,6 +60,7 @@ $string['crawl_sitelistremembersite'] = 'STARTUP: Remembering site "{$a->site}" 
 $string['crawl_sitelistremembersiteerror'] = 'Database problem when remembering site {$a->site} for crawling';
 $string['crawl_siteliststartup'] = 'STARTUP: Getting site list for later use';
 $string['crawl_sitefinish'] = 'SITE FINISH: Site "{$a->site}" has been crawled completely';
+$string['crawl_sitedeleted'] = 'SITE DELETED: Site "{$a->site}", core and plugin entries has being deleted';
 $string['crawl_siteremembercorecrawlederror'] = 'Database problem when storing core information crawl timestamp of site {$a->site} to database';
 $string['crawl_siterememberpluginscrawlederror'] = 'Database problem when storing plugins crawl timestamp of site {$a->site} to database';
 $string['crawl_siteremembersitecrawlederror'] = 'Database problem when storing site crawl timestamp of site {$a->site} to database';
