@@ -19,6 +19,7 @@
  *
  * @package     local_sitestats
  * @copyright   2019 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @author      2021 Adrian Perez, Fernfachhochschule Schweiz (FFHS) <adrian.perez@ffhs.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,6 +34,7 @@ require_once($CFG->dirroot.'/local/sitestats/locallib.php');
  *
  * @package     local_sitestats
  * @copyright   2019 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @author      2021 Adrian Perez, Fernfachhochschule Schweiz (FFHS) <adrian.perez@ffhs.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
@@ -93,7 +95,7 @@ class renderer extends \plugin_renderer_base {
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
                     GROUP BY pl.id, pl.frankenstyle, pl.title
-                    ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
+                    ORDER BY count(pl.id) DESC, pl.frankenstyle ASC';
                 $result_plugins = $DB->get_records_sql($sql_plugins);
 
                 // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
@@ -312,7 +314,7 @@ class renderer extends \plugin_renderer_base {
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
                     GROUP BY pl.id, pl.frankenstyle, pl.title
-                    ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
+                    ORDER BY count(pl.id) DESC, pl.frankenstyle ASC';
                 $result_plugins = $DB->get_records_sql($sql_plugins);
 
                 // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
@@ -499,7 +501,7 @@ class renderer extends \plugin_renderer_base {
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
                     GROUP BY pl.id, pl.frankenstyle, pl.title
-                    ORDER BY count(pl.*) DESC, pl.frankenstyle ASC';
+                    ORDER BY count(pl.id) DESC, pl.frankenstyle ASC';
                 $result_plugins = $DB->get_records_sql($sql_plugins);
 
                 // Clean results from Moodle instances which have reported all plugins as installed which is simply not realistic
