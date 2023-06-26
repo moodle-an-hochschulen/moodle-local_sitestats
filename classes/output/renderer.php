@@ -79,7 +79,7 @@ class renderer extends \plugin_renderer_base {
             if ($sumofsiteswithplugins > 0) {
 
                 // Get all site records and the plugin counts from DB ordered by site name
-                $sql_sitesplugins = 'SELECT site.id, site.url, site.title, count(jointable.site)
+                $sql_sitesplugins = 'SELECT site.id, site.url, site.title, count(jointable.site) AS count
                     FROM {local_sitestats_sites} AS site
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON site.id = jointable.site
@@ -88,7 +88,7 @@ class renderer extends \plugin_renderer_base {
                 $result_sitesplugins = $DB->get_records_sql($sql_sitesplugins);
 
                 // Get all plugin records and the installation counts from DB ordered by installation count
-                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
+                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle) AS count
                     FROM {local_sitestats_plugins} AS pl
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
@@ -298,7 +298,7 @@ class renderer extends \plugin_renderer_base {
             if ($sumofsiteswithplugins > 0) {
 
                 // Get all site records and the plugin counts from DB ordered by site name
-                $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site)
+                $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site) AS count
                     FROM {local_sitestats_sites} AS site
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON site.id = jointable.site
@@ -307,7 +307,7 @@ class renderer extends \plugin_renderer_base {
                 $result_sites = $DB->get_records_sql($sql_sites);
 
                 // Get all plugin records and the installation counts from DB ordered by installation count
-                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
+                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle) AS count
                     FROM {local_sitestats_plugins} AS pl
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
@@ -365,18 +365,27 @@ class renderer extends \plugin_renderer_base {
                 // Pick the plugin counts per site.
                 $pluginsusedpersiterawdata = array();
                 foreach ($result_sites as $s) {
-                    if ($pluginsusedpersiterawdata[$s->count]) {
+                    if (array_key_exists($s->count, $pluginsusedpersiterawdata)) {
                         $pluginsusedpersiterawdata[$s->count]++;
                     } else {
                         $pluginsusedpersiterawdata[$s->count] = 1;
                     };
                 }
+
+                $rangekey = 0;
                 $pluginsusedpersitedata = array();
                 $pluginsusedpersitelabels = array();
                 for ($j = 1; $j <= max(array_keys($pluginsusedpersiterawdata)); $j += 5) {
-                    $pluginsusedpersitedata[] = $pluginsusedpersiterawdata[$j] + $pluginsusedpersiterawdata[$j + 1] +
-                        $pluginsusedpersiterawdata[$j + 2] + $pluginsusedpersiterawdata[$j + 3] + $pluginsusedpersiterawdata[$j + 4];
-                    $pluginsusedpersitelabels[] = get_string('chart_pluginusedpersiteaxis', 'local_sitestats', array('from' => $j, 'to' => ($j + 4)));
+                    $pluginsusedpersitedata[$rangekey] = 0;
+
+                    for ($i = 0; $i < 5; $i++) {
+                        $pluginsusedpersitedata[$rangekey] += $pluginsusedpersiterawdata[$j + $i] ?? 0;
+                    }
+
+                    $pluginsusedpersitelabels[$rangekey] =
+                        get_string('chart_pluginusedpersiteaxis', 'local_sitestats', ['from' => $j, 'to' => ($j + 4)]);
+
+                    $rangekey++;
                 }
 
                 // Build chart heading.
@@ -485,7 +494,7 @@ class renderer extends \plugin_renderer_base {
             if ($sumofsiteswithplugins > 0) {
 
                 // Get all site records and the plugin counts from DB ordered by site name
-                $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site)
+                $sql_sites = 'SELECT site.id, site.url, site.title, count(jointable.site) AS count
                     FROM {local_sitestats_sites} AS site
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON site.id = jointable.site
@@ -494,7 +503,7 @@ class renderer extends \plugin_renderer_base {
                 $result_sites = $DB->get_records_sql($sql_sites);
 
                 // Get all plugin records and the installation counts from DB ordered by installation count
-                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle)
+                $sql_plugins = 'SELECT pl.id, pl.frankenstyle, pl.title, count(pl.frankenstyle) AS count
                     FROM {local_sitestats_plugins} AS pl
                     JOIN {local_sitestats_plugins_site} AS jointable
                     ON pl.id = jointable.plugin
