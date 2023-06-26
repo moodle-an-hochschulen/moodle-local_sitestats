@@ -51,7 +51,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="site" TYPE="int" LENGTH="5" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="key" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="value" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

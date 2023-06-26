@@ -365,7 +365,7 @@ class crawl extends \core\task\scheduled_task {
                     if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
 
                         // Find first occurence of a version number heading.
-                        $versionfound = preg_match('/=== ([0-9]\.[0-9])\.?[0-9]? ===/', $curldoc3, $matches);
+                        $versionfound = preg_match('/=== ([0-9]\.[0-9]{1,2}(\.[0-9]{1,2})?) ===/', $curldoc3, $matches);
 
                         // If we found a version, process it.
                         if ($versionfound == 1) {
@@ -375,11 +375,12 @@ class crawl extends \core\task\scheduled_task {
                             // Create database record.
                             $coreversion_record = new \stdClass();
                             $coreversion_record->site = $site->id;
-                            $coreversion_record->key = 'coreversion';
+                            $coreversion_record->name = 'coreversion';
                             $coreversion_record->value = $coreversion;
 
                             // Check if we have recorded this information before in DB.
-                            $coreversionbefore_result = $DB->get_record('local_sitestats_core', array('site' => $site->id, 'key' => get_string('coreversion', 'local_sitestats')));
+                            $coreversionbefore_result = $DB->get_record('local_sitestats_core',
+                                array('site' => $coreversion_record->site, 'name' => $coreversion_record->name));
 
                             // If there is already a record.
                             if ($coreversionbefore_result !== false) {
@@ -392,10 +393,13 @@ class crawl extends \core\task\scheduled_task {
                             }
                             if ($ret === true) {
                                 // Output log.
-                                echo get_string('crawl_coreinformationfound', 'local_sitestats', array('site' => $site->title, 'key' => get_string('coreversion', 'local_sitestats'), 'value' => $coreversion)) . PHP_EOL;
+                                echo get_string('crawl_coreinformationfound', 'local_sitestats',
+                                        array('site' => $site->title, 'name' => get_string('coreversion', 'local_sitestats'),
+                                            'value' => $coreversion)) . PHP_EOL;
                             } else {
                                 // Quit
-                                echo get_string('crawl_coreinformationfounderror', 'local_sitestats', array('key' => get_string('coreversion', 'local_sitestats'))) . PHP_EOL;
+                                echo get_string('crawl_coreinformationfounderror', 'local_sitestats',
+                                        array('name' => get_string('coreversion', 'local_sitestats'))) . PHP_EOL;
                                 return false;
                             }
                             unset ($ret);
@@ -403,7 +407,9 @@ class crawl extends \core\task\scheduled_task {
                         // Otherwise we have to say that we did not get this information.
                         else {
                             // Output log.
-                            echo get_string('crawl_coreinformationnotfound', 'local_sitestats', array('site' => $site->title, 'key' => get_string('coreversion', 'local_sitestats'))).PHP_EOL;
+                            echo get_string('crawl_coreinformationnotfound', 'local_sitestats',
+                                    array('site' => $site->title, 'name' => get_string('coreversion', 'local_sitestats'))) .
+                                PHP_EOL;
                         }
 
                         // If there was a timeout, head over to next site.
@@ -414,7 +420,8 @@ class crawl extends \core\task\scheduled_task {
                     // Otherwise we have to say that we did not get this information.
                     else {
                         // Output log.
-                        echo get_string('crawl_coreinformationnotfound', 'local_sitestats', array('site' => $site->title, 'key' => get_string('coreversion', 'local_sitestats'))).PHP_EOL;
+                        echo get_string('crawl_coreinformationnotfound', 'local_sitestats',
+                                array('site' => $site->title, 'name' => get_string('coreversion', 'local_sitestats'))) . PHP_EOL;
                     }
 
                     // Curl close
